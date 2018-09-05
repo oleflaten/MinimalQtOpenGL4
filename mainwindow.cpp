@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete mRenderWindowWidget;
+    delete mRenderWindow;
     delete ui;
 }
 
@@ -33,15 +33,15 @@ void MainWindow::init()
 
     qDebug() << "Requesting surface format" << format;
 
-    mRenderWindowWidget = new RenderWindow(format, this);
+    mRenderWindow = new RenderWindow(format, this);
 
-    if (!mRenderWindowWidget->context()) {
+    if (!mRenderWindow->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindowWidget;
+        delete mRenderWindow;
         return;
     }
 
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindowWidget);
+    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
     ui->OpenGLLayout->addWidget(mRenderWindowContainer);
 
     mRenderWindowContainer->setFocus();
