@@ -2,8 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include <QSurfaceFormat>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
 #include <QDebug>
 
 #include "renderwindow.h"

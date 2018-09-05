@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 
-class QSurface;
 class QWidget;
 class RenderWindow;
 
