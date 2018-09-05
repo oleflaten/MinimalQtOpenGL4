@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete mRenderWindowWidget;
+    delete mRenderWindow;
     delete ui;
 }
 
@@ -45,17 +45,17 @@ void MainWindow::init()
     qDebug() << "Requesting surface format" << format;
 
     //We have a format for the OpenGL window, so let's make it:
-    mRenderWindowWidget = new RenderWindow(format, this);
+    mRenderWindow = new RenderWindow(format, this);
 
     //Checks if renderwindow did initialize, else prints error and quits
-    if (!mRenderWindowWidget->context()) {
+    if (!mRenderWindow->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindowWidget;
+        delete mRenderWindow;
         return;
     }
 
     //The OpenGL RenderWindow got made, so continuing the setup:
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindowWidget);
+    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
     ui->OpenGLLayout->addWidget(mRenderWindowContainer);
 
     //sets the keyboard input focus to the RenderWindow when program starts

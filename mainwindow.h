@@ -20,7 +20,6 @@ public:
 
 private:
     void init();
-    void addRenderWindow();
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer;
