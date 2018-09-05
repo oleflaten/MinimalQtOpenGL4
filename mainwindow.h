@@ -24,7 +24,7 @@ private:
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindowWidget;
+    RenderWindow *mRenderWindow;
 };
 
 #endif // MAINWINDOW_H
