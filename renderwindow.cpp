@@ -1,14 +1,12 @@
 #include "renderwindow.h"
 #include <QTimer>
 #include <QMatrix4x4>
+#include <QStatusBar>
 #include <QOpenGLContext>
-#include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
 #include <QOpenGLDebugLogger>
 #include <QKeyEvent>
-#include <QStatusBar>
 #include <QDebug>
-#include <QMatrix4x4>
 
 #include "shader.h"
 #include "mainwindow.h"
