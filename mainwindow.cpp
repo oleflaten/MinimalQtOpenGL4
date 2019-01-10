@@ -28,7 +28,7 @@ void MainWindow::init()
     //you can try other versions, but then have to update RenderWindow and Shader
     //to inherit from other than QOpenGLFunctions_4_1_Core
     format.setVersion(4, 1);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
     //A QSurface can be other types that OpenGL
     format.setRenderableType(QSurfaceFormat::OpenGL);
 

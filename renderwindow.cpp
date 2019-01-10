@@ -37,7 +37,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 RenderWindow::~RenderWindow()
 {
     //cleans up the GPU memory
-    glDeleteVertexArrays( 1, &mVAO );
+//    glDeleteVertexArrays( 1, &mVAO );
     glDeleteBuffers( 1, &mVBO );
 }
 
@@ -90,12 +90,11 @@ void RenderWindow::init()
     mShaderProgram = new Shader("../MinimalQtOpenGL4/plainvertex.vert", "../MinimalQtOpenGL4/plainfragment.frag");
 
 
-
     //********************** Making the object to be drawn **********************
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
+//    glGenVertexArrays( 1, &mVAO );
+//    glBindVertexArray( mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
     glGenBuffers( 1, &mVBO );
@@ -104,6 +103,19 @@ void RenderWindow::init()
 
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    setupAttribPointers();
+
+    //enable the matrixUniform
+    // NB: enable in shader and in render() function also to use matrix
+    mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
+
+    glBindVertexArray( 0 );
+}
+
+void RenderWindow::setupAttribPointers()
+{
+    initializeOpenGLFunctions();    //must call this every frame it seems...
+
     glVertexAttribPointer(
                 0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
                 3,                  // size
@@ -118,30 +130,31 @@ void RenderWindow::init()
     // Same parameter list as abowe
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  6 * sizeof( GLfloat ),  (GLvoid*)(3 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(1);
-
-    //enable the matrixUniform
-    // NB: enable in shader and in render() function also to use matrix
-    mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
-
-    glBindVertexArray( 0 );
 }
 
 ///Called each frame - doing the rendering
 void RenderWindow::render()
 {
     mTimeStart.restart(); //restart FPS clock
+
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    checkForGLerrors();
 
     //what shader to use
     glUseProgram(mShaderProgram->getProgram() );
+    checkForGLerrors();
 
     //what object to draw
-    glBindVertexArray( mVAO );
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    checkForGLerrors();
+
+    setupAttribPointers();
+    checkForGLerrors();
 
     //Since our shader uses a matrix and we rotate the triangle, we send the current matrix here
     //must be here to update each frame - if static object, it could be set only once
