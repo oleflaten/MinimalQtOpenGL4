@@ -62,3 +62,8 @@ void MainWindow::init()
     // - can be deleted
     mRenderWindowContainer->setFocus();
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    qDebug() << "Button clicked";
+}

@@ -89,8 +89,6 @@ void RenderWindow::init()
     // (out of the build-folder) and then up into the project folder.
     mShaderProgram = new Shader("../MinimalQtOpenGL4/plainvertex.vert", "../MinimalQtOpenGL4/plainfragment.frag");
 
-
-
     //********************** Making the object to be drawn **********************
 
     //Vertex Array Object - VAO
