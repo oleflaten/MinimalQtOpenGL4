@@ -250,7 +250,7 @@ void RenderWindow::startOpenGLDebugger()
     {
         QSurfaceFormat format = temp->format();
         if (! format.testOption(QSurfaceFormat::DebugContext))
-            qDebug() << "This system can not QOpenGLDebugLogger, so we revert to glGetError()";
+            qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
 
         if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
         {
