@@ -129,6 +129,7 @@ void RenderWindow::init()
 ///Called each frame - doing the rendering
 void RenderWindow::render()
 {
+    mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
@@ -148,6 +149,12 @@ void RenderWindow::render()
 
     //actual draw call
     glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    //Calculate framerate before
+    // checkForGLerrors() because that takes a long time
+    // and before swapBuffers(), else it will show the vsync time
+    calculateFramerate();
+
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
@@ -184,27 +191,35 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
 }
 
+//The way this is set up is that we start the clock before doing the draw call,
+//and check the time right after it is finished (done in the render function)
+//This will approximate what framerate we COULD have.
+//The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
+void RenderWindow::calculateFramerate()
+{
+    long nsecElapsed = mTimeStart.nsecsElapsed();
+    static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
+
+    if (mMainWindow)    //if no mainWindow, something is really wrong...
+    {
+        ++frameCount;
+        if (frameCount > 30) //once pr 30 frames = update the message twice pr second (on a 60Hz monitor)
+        {
+            //showing some statistics in status bar
+            mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
+                                                  QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+            frameCount = 0;     //reset to show a new message in 60 frames
+        }
+    }
+}
+
 //This function is called everytime the timer "ticks"
 //the name timerEvent() is built into Qt - what the QTimer looks for
 void RenderWindow::timerEvent(QTimerEvent *)
 {
     //calling the
     render();
-
-    //The rest here is just to show the frame rate:
-    int msSinceLastFrame = mTimeStart.restart();    //restart() returns ms since last restart.
-    static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
-
-    if (mMainWindow)    //if no mainWindow, something is really wrong...
-    {
-        ++frameCount;
-        if (frameCount > 60) //once pr 60 frames =  update the message once pr second
-        {
-            //showing some statistics in status bar
-            mMainWindow->statusBar()->showMessage(" Time Pr FrameDraw: " + QString::number(msSinceLastFrame) + " ms");
-            frameCount = 0;     //reset to show a new message in 60 frames
-        }
-    }
 }
 
 /// Uses QOpenGLDebugLogger if present
@@ -246,16 +261,20 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-///Just a silly test to show that keyboard input works
-/// Updates the statusbar in the program
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_A)
+    if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
-        mMainWindow->statusBar()->showMessage(" AAAA");
+        mMainWindow->close();
     }
-    if(event->key() == Qt::Key_S)
-    {
-        mMainWindow->statusBar()->showMessage(" SSSS");
-    }
+
+    //You get the keyboard input like this
+//    if(event->key() == Qt::Key_A)
+//    {
+//        mMainWindow->statusBar()->showMessage(" AAAA");
+//    }
+//    if(event->key() == Qt::Key_S)
+//    {
+//        mMainWindow->statusBar()->showMessage(" SSSS");
+//    }
 }

@@ -4,7 +4,7 @@
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QBasicTimer>
-#include <QTime>
+#include <QElapsedTimer>
 
 class QOpenGLContext;
 class Shader;
@@ -49,13 +49,15 @@ private:
     QMatrix4x4 *mMVPmatrix; //The matrix with the transform for the object we draw
 
     QBasicTimer mTimer;     //timer that drives the gameloop
-    QTime mTimeStart;       //time variable that reads the actual FPS
+    QElapsedTimer mTimeStart;       //time variable that reads the actual FPS
 
     MainWindow *mMainWindow;    //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
     void checkForGLerrors();
+
+    void calculateFramerate();
 
 protected:
     //The QWindow that we inherit from has these functions to capture

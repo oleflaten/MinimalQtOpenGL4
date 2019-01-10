@@ -38,7 +38,7 @@ void MainWindow::init()
     format.setOption(QSurfaceFormat::DebugContext);
 
     // The example rendering will need a depth buffer - not requiered to set in glfw-tutorials!
-    format.setDepthBufferSize(16);
+    format.setDepthBufferSize(24);
 
     //Just prints out what OpenGL format we will get
     // - can be deleted
