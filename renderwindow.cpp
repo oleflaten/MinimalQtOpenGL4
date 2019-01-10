@@ -92,9 +92,9 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
-    //Vertex Array Object - VAO
-//    glGenVertexArrays( 1, &mVAO );
-//    glBindVertexArray( mVAO );
+    //Vertex Array Object - VAO - must have this in modern OpenGL
+    glGenVertexArrays( 1, &mVAO );
+    glBindVertexArray( mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
     glGenBuffers( 1, &mVBO );
@@ -109,7 +109,7 @@ void RenderWindow::init()
     // NB: enable in shader and in render() function also to use matrix
     mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
 
-    glBindVertexArray( 0 );
+//    glBindVertexArray( 0 );
 }
 
 void RenderWindow::setupAttribPointers()

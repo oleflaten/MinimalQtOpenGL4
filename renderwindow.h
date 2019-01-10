@@ -43,7 +43,7 @@ private:
     Shader *mShaderProgram;
     GLint  mMatrixUniform;
 
-//    GLuint mVAO;
+    GLuint mVAO;
     GLuint mVBO;
 
     QMatrix4x4 *mMVPmatrix; //The matrix with the transform for the object we draw
