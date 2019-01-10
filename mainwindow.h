@@ -5,6 +5,7 @@
 
 class QWidget;
 class RenderWindow;
+class GLWidget;
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,7 @@ private:
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
+    GLWidget *mGLwidget;
 };
 
 #endif // MAINWINDOW_H

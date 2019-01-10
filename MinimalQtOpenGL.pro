@@ -8,12 +8,14 @@ TARGET      = 3D-programming
 SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    glwidget.cpp
 
 HEADERS += \
     renderwindow.h \
     shader.h \
-    mainwindow.h
+    mainwindow.h \
+    glwidget.h
 
 FORMS += \
     mainwindow.ui

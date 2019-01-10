@@ -3,6 +3,7 @@
 
 #include <QSurfaceFormat>
 #include <QDebug>
+#include "glwidget.h"
 
 #include "renderwindow.h"
 
@@ -37,28 +38,41 @@ void MainWindow::init()
     //can be deleted, but it is nice to have OpenGL debug info!
     format.setOption(QSurfaceFormat::DebugContext);
 
-    // The example rendering will need a depth buffer - not requiered to set in glfw-tutorials!
-    format.setDepthBufferSize(16);
+    // The example rendering will need a depth buffer - not requiered to set in glfw-tutorials
+    // so you don't see this to often!
+    format.setDepthBufferSize(24);
 
     //Just prints out what OpenGL format we will get
     // - can be deleted
     qDebug() << "Requesting surface format" << format;
 
+    QSurfaceFormat::setDefaultFormat(format);
+
     //We have a format for the OpenGL window, so let's make it:
-    mRenderWindow = new RenderWindow(format, this);
+//    mRenderWindow = new RenderWindow(format, this);
+    mGLwidget = new GLWidget(format);
+//    mGLwidget->setFormat(format);
 
     //Checks if renderwindow did initialize, else prints error and quits
-    if (!mRenderWindow->context()) {
+//    if (!mRenderWindow->context()) {
+//        qDebug() << "Failed to create context. Can not continue. Quits application!";
+//        delete mRenderWindow;
+//        return;
+//    }
+    if (!mGLwidget->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindow;
+        delete mGLwidget;
         return;
     }
 
     //The OpenGL RenderWindow got made, so continuing the setup:
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
+//    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
     ui->OpenGLLayout->addWidget(mRenderWindowContainer);
+    ui->OpenGLLayout->addWidget(mGLwidget);
+
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted
-    mRenderWindowContainer->setFocus();
+//    mRenderWindowContainer->setFocus();
+    mGLwidget->setFocus();
 }
