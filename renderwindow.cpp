@@ -16,12 +16,13 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 {
     //This is sent to QWindow:
-    setSurfaceType(QWindow::OpenGLSurface);
+//    setSurfaceType(QWindow::OpenGLSurface);
     setFormat(format);
     //Make the OpenGL context
     mContext = new QOpenGLContext(this);
     //Give the context the wanted OpenGL format (v4.1 Core)
-    mContext->setFormat(requestedFormat());
+//    mContext->setFormat(requestedFormat());
+    mContext->setFormat(format);
     if (!mContext->create()) {
         delete mContext;
         mContext = nullptr;
@@ -32,6 +33,10 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //You could do without, but then you have to simplify the shader and shader setup
     mMVPmatrix = new QMatrix4x4{};
     mMVPmatrix->setToIdentity();
+
+    //Set up the redraw timer:
+    mTimer = new QTimer(this);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(update()));
 }
 
 RenderWindow::~RenderWindow()
@@ -51,22 +56,22 @@ static GLfloat vertices[] =
 };
 
 /// Sets up the general OpenGL stuff and the buffers needed to render a triangle
-void RenderWindow::init()
+void RenderWindow::initializeGL()
 {
 
     //********************** General OpenGL stuff **********************
 
     //The OpenGL context has to be set.
     //The context belongs to the instanse of this class!
-    if (!mContext->makeCurrent(this)) {
-        qDebug() << "makeCurrent() failed";
-        return;
-    }
+//    if (!mContext->makeCurrent(this)) {
+//        qDebug() << "makeCurrent() failed";
+//        return;
+//    }
 
     //just to make sure we don't init several times
     //used in exposeEvent()
-    if (!mInitialized)
-        mInitialized = true;
+//    if (!mInitialized)
+//        mInitialized = true;
 
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
@@ -124,12 +129,15 @@ void RenderWindow::init()
     mMatrixUniform = glGetUniformLocation( mShaderProgram->getProgram(), "matrix" );
 
     glBindVertexArray( 0 );
+
+    mTimer->start(16); //this
+    mTimeStart.start();
 }
 
 ///Called each frame - doing the rendering
-void RenderWindow::render()
+void RenderWindow::paintGL()
 {
-    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+//    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
@@ -154,7 +162,7 @@ void RenderWindow::render()
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
-    mContext->swapBuffers(this);
+//    mContext->swapBuffers(this);
 
     //just to make the triangle rotate:
     //               degree, x,   y,   z -axis
@@ -164,10 +172,10 @@ void RenderWindow::render()
 //This function is called from Qt when window is exposed (shown)
 //and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
-void RenderWindow::exposeEvent(QExposeEvent *)
+void RenderWindow::resizeGL(int w, int h) //exposeEvent(QExposeEvent *)
 {
-    if (!mInitialized)
-        init();
+//    if (!mInitialized)
+//        init();
 
     //This is just to support modern screens with "double" pixels
     const qreal retinaScale = devicePixelRatio();
@@ -175,13 +183,13 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //If the window actually is exposed to the screen we start the main loop
     //isExposed() is a function in QWindow
-    if (isExposed())
-    {
-        //This timer runs the actual MainLoop
-        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact..)
-        mTimer.start(16, this); //this
-        mTimeStart.start();
-    }
+//    if (isExposed())
+//    {
+//        //This timer runs the actual MainLoop
+//        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact..)
+//        mTimer.start(16, this); //this
+//        mTimeStart.start();
+//    }
 }
 
 //This function is called everytime the timer "ticks"
@@ -189,7 +197,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 void RenderWindow::timerEvent(QTimerEvent *)
 {
     //calling the
-    render();
+    paintGL();
 
     //The rest here is just to show the frame rate:
     int msSinceLastFrame = mTimeStart.restart();    //restart() returns ms since last restart.

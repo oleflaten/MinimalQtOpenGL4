@@ -2,8 +2,9 @@
 #define RENDERWINDOW_H
 
 #include <QWindow>
+#include <QOpenGLWidget>
 #include <QOpenGLFunctions_4_1_Core>
-#include <QBasicTimer>
+#include <QTimer>
 #include <QTime>
 
 class QOpenGLContext;
@@ -17,7 +18,7 @@ class MainWindow;
 ///
 /// We also inherit from QOpenGLFunctions, to get access to the OpenGL stuff
 /// This is the same as using glad and glw from general OpenGL tutorials
-class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
+class RenderWindow : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
 public:
@@ -25,15 +26,16 @@ public:
     ~RenderWindow() override;
 
     QOpenGLContext *context() { return mContext; }
-    void exposeEvent(QExposeEvent *) override;
+    void resizeGL(int w, int h) override;
+//    void exposeEvent(QExposeEvent *) override;
 
  void error(const QString &msg);
 
 private slots:
-    void render();
+    void paintGL() override;
 
 private:
-    void init();
+    void initializeGL() override;
 
     void startOpenGLDebugger();
 
@@ -48,7 +50,8 @@ private:
 
     QMatrix4x4 *mMVPmatrix; //The matrix with the transform for the object we draw
 
-    QBasicTimer mTimer;     //timer that drives the gameloop
+    QTimer *mTimer;     //timer that drives the gameloop
+
     QTime mTimeStart;       //time variable that reads the actual FPS
 
     MainWindow *mMainWindow;    //points back to MainWindow to be able to put info in StatusBar

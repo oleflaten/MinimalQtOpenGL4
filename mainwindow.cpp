@@ -49,30 +49,31 @@ void MainWindow::init()
     QSurfaceFormat::setDefaultFormat(format);
 
     //We have a format for the OpenGL window, so let's make it:
-//    mRenderWindow = new RenderWindow(format, this);
-    mGLwidget = new GLWidget(format);
+    mRenderWindow = new RenderWindow(format, this);
+//    mGLwidget = new GLWidget(format);
 //    mGLwidget->setFormat(format);
 
     //Checks if renderwindow did initialize, else prints error and quits
-//    if (!mRenderWindow->context()) {
-//        qDebug() << "Failed to create context. Can not continue. Quits application!";
-//        delete mRenderWindow;
-//        return;
-//    }
-    if (!mGLwidget->context()) {
+    if (!mRenderWindow->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mGLwidget;
+        delete mRenderWindow;
         return;
     }
+//    if (!mGLwidget->context()) {
+//        qDebug() << "Failed to create context. Can not continue. Quits application!";
+//        delete mGLwidget;
+//        return;
+//    }
 
     //The OpenGL RenderWindow got made, so continuing the setup:
 //    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
-    ui->OpenGLLayout->addWidget(mRenderWindowContainer);
-    ui->OpenGLLayout->addWidget(mGLwidget);
+//    ui->OpenGLLayout->addWidget(mRenderWindowContainer);
+//    ui->OpenGLLayout->addWidget(mGLwidget);
+    ui->OpenGLLayout->addWidget(mRenderWindow);
 
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted
 //    mRenderWindowContainer->setFocus();
-    mGLwidget->setFocus();
+//    mGLwidget->setFocus();
 }
