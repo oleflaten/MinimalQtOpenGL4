@@ -15,9 +15,11 @@ class Shader : protected QOpenGLFunctions_4_1_Core
 public:
     // Constructor generates the shader on the fly
     Shader( const GLchar *vertexPath, const GLchar *fragmentPath );
-    // Uses the current shader
+
+    // Use the current shader
     void use( );
 
+    //Get program number for this shader
     GLuint getProgram() const;
 
 private:
