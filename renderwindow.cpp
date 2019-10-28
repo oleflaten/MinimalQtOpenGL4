@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <iostream>
 
 #include "shader.h"
 #include "mainwindow.h"
@@ -41,7 +42,7 @@ RenderWindow::~RenderWindow()
     glDeleteBuffers( 1, &mVBO );
 }
 
-//Simple global for vertices of a triangle - should belong to a class !
+// Simple global for vertices of a triangle - should belong to a class !
 static GLfloat vertices[] =
 {
     // Positions         // Colors
@@ -50,10 +51,9 @@ static GLfloat vertices[] =
     0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // Top
 };
 
-/// Sets up the general OpenGL stuff and the buffers needed to render a triangle
+// Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-
     //********************** General OpenGL stuff **********************
 
     //The OpenGL context has to be set.
@@ -71,6 +71,11 @@ void RenderWindow::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
+    //Print GPU and render version info: (qDebug() does not show correct info)
+    std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
+
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
     //Supported on most Windows machines
@@ -81,7 +86,7 @@ void RenderWindow::init()
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);    //enables depth sorting - must use GL_DEPTH_BUFFER_BIT in glClear
     //    glEnable(GL_CULL_FACE);     //draws only front side of models - usually what you want -
-    glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //color used in glClear GL_COLOR_BUFFER_BIT
+    glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //background-color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders:
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -124,7 +129,7 @@ void RenderWindow::init()
     glBindVertexArray( 0 );
 }
 
-///Called each frame - doing the rendering
+// Called each frame - doing the rendering
 void RenderWindow::render()
 {
     mTimeStart.restart(); //restart FPS clock
@@ -145,7 +150,7 @@ void RenderWindow::render()
     //must be here to update each frame - if static object, it could be set only once
     glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMVPmatrix->constData());
 
-    //actual draw call
+    //actual draw call - 3 vertices
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     //Calculate framerate before
@@ -166,9 +171,9 @@ void RenderWindow::render()
     mMVPmatrix->rotate(2.f, 0.f, 1.0, 0.f);
 }
 
-//This function is called from Qt when window is exposed (shown)
-//and when it is resized
-//exposeEvent is a overridden function from QWindow that we inherit from
+// This function is called from Qt when window is exposed (shown)
+// and when it is resized
+// exposeEvent is a overridden function from QWindow that we inherit from
 void RenderWindow::exposeEvent(QExposeEvent *)
 {
     if (!mInitialized)
@@ -189,10 +194,10 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
 }
 
-//The way this is set up is that we start the clock before doing the draw call,
-//and check the time right after it is finished (done in the render function)
-//This will approximate what framerate we COULD have.
-//The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
+// The way this is set up is that we start the clock before doing the draw call,
+// and check the time right after it is finished (done in the render function)
+// This will approximate what framerate we COULD have.
+// The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
@@ -207,21 +212,21 @@ void RenderWindow::calculateFramerate()
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
                                                   "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
-            frameCount = 0;     //reset to show a new message in 60 frames
+            frameCount = 0;     //reset to show a new message in 30 frames
         }
     }
 }
 
-//This function is called everytime the timer "ticks"
-//the name timerEvent() is built into Qt - what the QTimer looks for
+// This function is called everytime the timer "ticks"
+// the name timerEvent() is built into Qt - what the QTimer looks for
 void RenderWindow::timerEvent(QTimerEvent *)
 {
     //calling the
     render();
 }
 
-/// Uses QOpenGLDebugLogger if present
-/// Reverts to glGetError() if not
+// Uses QOpenGLDebugLogger if present
+// Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()
 {
     if(mOpenGLDebugLogger)
@@ -240,7 +245,7 @@ void RenderWindow::checkForGLerrors()
     }
 }
 
-/// Tries to start the extended OpenGL debugger that comes with Qt
+// Tries to start the extended OpenGL debugger that comes with Qt
 void RenderWindow::startOpenGLDebugger()
 {
     QOpenGLContext * temp = this->context();

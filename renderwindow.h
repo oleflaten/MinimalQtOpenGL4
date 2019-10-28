@@ -10,13 +10,13 @@ class QOpenGLContext;
 class Shader;
 class MainWindow;
 
-///This inherits from QWindow so we can put it inside a QWidget
-/// It has to inherit from QWindow, not a QWidget because we want to have
-/// access to the full OpenGL, and then we have to set the format for this window.
-/// Not possible for a Widget.
-///
-/// We also inherit from QOpenGLFunctions, to get access to the OpenGL stuff
-/// This is the same as using glad and glw from general OpenGL tutorials
+// This inherits from QWindow so we can put it inside a QWidget
+//  It has to inherit from QWindow, not a QWidget because we want to have
+//  access to the full OpenGL, and then we have to set the format for this window.
+//  Not possible for a Widget.
+//
+//  We also inherit from QOpenGLFunctions, to get access to the OpenGL stuff
+//  This is the same as using glad and glw from general OpenGL tutorials
 class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
